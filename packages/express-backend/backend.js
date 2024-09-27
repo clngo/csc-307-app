@@ -56,6 +56,18 @@ const addUser = (user) => {
   return user;
 };
 
+const deleteUser = (userId) => {
+  // Check if the user exists by trying to find them
+  const foundUser = findUserById(userId);
+
+  if (foundUser) {
+    users.users_list = users.users_list.filter((user) => user.id !== userId);
+    return true; 
+  }
+
+  return false; 
+};
+
 app.get("/users", (req, res) => {
   const name = req.query.name;
   if (name != undefined) {
@@ -67,13 +79,25 @@ app.get("/users", (req, res) => {
   }
 });
 
-app.get("/users/:id", (req, res) => {
+app.get("/users", (req, res) => {
   const id = req.params["id"]; //or req.params.id
   let result = findUserById(id);
   if (result === undefined) {
     res.status(404).send("Resource not found.");
   } else {
     res.send(result);
+  }
+});
+
+app.delete("/users", (req, res) => {
+  const { id } = req.body;
+  let result = deleteUser(id);
+
+  if (result) {
+    res.send("User was deleted");
+  }
+  else {
+    res.status(404).send("User not found.");
   }
 });
 
