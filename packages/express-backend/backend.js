@@ -116,12 +116,12 @@ app.get("/users", (req, res) => {
   }
 });
 
-app.delete("/users", (req, res) => {
+app.delete("/users/", (req, res) => {
   const { id } = req.body;
   let result = deleteUser(id);
 
   if (result) {
-    res.send("User was deleted");
+    res.status(204).send(); // No content if successful
   }
   else {
     res.status(404).send("User not found.");
