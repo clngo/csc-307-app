@@ -16,10 +16,19 @@ function MyApp() {
   
   function updateList(person) { 
     postUser(person)
-      .then(() => setCharacters([...characters, person]))
-      .catch((error) => {
-        console.log(error);
-      })
+    .then((response) => {
+      if (response.status === 201) {
+        return response.json(); // Return the newly added user data
+      } else {
+        throw new Error("Failed to add user");
+      }
+    })
+    .then((newUser) => {
+      setCharacters([...characters, newUser]); // Add the new user to the state
+    })
+    .catch((error) => {
+      console.log(error);
+    })
 }
   
   function fetchUsers() {
