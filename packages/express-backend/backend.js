@@ -12,6 +12,12 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+const generateRandomId = () => {
+  const letters = String.fromCharCode(...Array.from({ length: 3 }, () => Math.floor(Math.random() * 26) + 97));
+  const numbers = Math.floor(Math.random() * 1000).toString().padStart(3, '0'); // Generate a number and pad it to 3 digits
+  return `${letters}${numbers}`; // Concatenate letters and numbers
+};
+
 
 const users = {
   users_list: [
@@ -60,6 +66,7 @@ const findUsersByNameAndJob = (name, job) => {
 
 
 const addUser = (user) => {
+  user.id = generateRandomId();
   users["users_list"].push(user);
   return user;
 };
