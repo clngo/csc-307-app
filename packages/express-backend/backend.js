@@ -1,14 +1,22 @@
 // backend.js
 import express from "express";
+import cors from "cors";
 
 const app = express();
 const port = 8000;
 
+app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
+
+const generateRandomId = () => {
+  const letters = String.fromCharCode(...Array.from({ length: 3 }, () => Math.floor(Math.random() * 26) + 97));
+  const numbers = Math.floor(Math.random() * 1000).toString().padStart(3, '0'); // Generate a number and pad it to 3 digits
+  return `${letters}${numbers}`; // Concatenate letters and numbers
+};
 
 
 const users = {
@@ -58,6 +66,7 @@ const findUsersByNameAndJob = (name, job) => {
 
 
 const addUser = (user) => {
+  user.id = generateRandomId();
   users["users_list"].push(user);
   return user;
 };
@@ -107,12 +116,12 @@ app.get("/users", (req, res) => {
   }
 });
 
-app.delete("/users", (req, res) => {
+app.delete("/users/", (req, res) => {
   const { id } = req.body;
   let result = deleteUser(id);
 
   if (result) {
-    res.send("User was deleted");
+    res.status(204).send(); // No content if successful
   }
   else {
     res.status(404).send("User not found.");
@@ -122,7 +131,7 @@ app.delete("/users", (req, res) => {
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
   addUser(userToAdd);
-  res.send();
+  res.status(201).json(userToAdd);
 });
 
 // Existing route
