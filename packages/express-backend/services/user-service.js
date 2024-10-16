@@ -1,3 +1,4 @@
+// user-service.js
 import mongoose from "mongoose";
 import userModel from "../models/user.js";
 
