@@ -51,24 +51,24 @@ app.get("/users", (req, res) => {
         res.send({ users_list : result });
       })
       .catch(error => {
-        res.status(500).send("Error retrieving users" + error);
+        res.status(500).send("Error retrieving users");
       });
   } 
 );
 
 // get user by id
-app.get("/users", (req, res) => {
-  const id = req.params["id"]; //or req.params.id
+app.get("/users/:id", (req, res) => {
+  const id = req.params.id;
   userService.findUserById(id)
     .then(result => {
-      if (result) {
+      if (result) { 
         res.send(result);
       } else {
         res.status(404).send("User not found.");
       }
     })
-    .catch((error) => {
-      res.status(500).send("Error retrieving user");
+    .catch(error => {
+      res.status(500).send("Error retrieving user" + error);
     });
 });
 
@@ -90,7 +90,6 @@ app.delete("/users/", (req, res) => {
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
   userToAdd.id = generateRandomId();
-  
   userService.addUser(userToAdd)
     .then(addedUser => {
     res.status(201).json(addedUser);

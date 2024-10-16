@@ -15,11 +15,6 @@ const UserSchema = new mongoose.Schema(
         if (value.length < 2)
           throw new Error("Invalid job, must be at least 2 characters.");
       },
-    },
-    id : {
-      type: String,
-      required: true,
-      trim: true,
     }
   },
   { collection: "users_list" }
