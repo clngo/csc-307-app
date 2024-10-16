@@ -14,7 +14,7 @@ mongoose.set("debug", true);
 mongoose
   .connect(MONGO_CONNECTION_STRING)
   .catch((error) => console.log(error));
-  
+
 const app = express();
 const port = 8000;
 
@@ -31,38 +31,6 @@ const generateRandomId = () => {
   return `${letters}${numbers}`; // Concatenate letters and numbers
 };
 
-
-const users = {
-  users_list: [
-    {
-      id: "xyz789",
-      name: "Charlie",
-      job: "Janitor"
-    },
-    {
-      id: "abc123",
-      name: "Mac",
-      job: "Bouncer"
-    },
-    {
-      id: "ppp222",
-      name: "Mac",
-      job: "Professor"
-    },
-    {
-      id: "yat999",
-      name: "Dee",
-      job: "Aspring actress"
-    },
-    {
-      id: "zap555",
-      name: "Dennis",
-      job: "Bartender"
-    }
-  ]
-};
-
-
 // const deleteUser = (userId) => {
 //   // Check if the user exists by trying to find them
 //   const foundUser = findUserById(userId);
@@ -75,6 +43,19 @@ const users = {
 //   return false; 
 // };
 
+// Get users all users by name, job, or neither
+app.get("/users", (req, res) => {
+  const { name, job } = req.query;
+    userService.getUsers(name, job)
+      .then(result => {
+        res.send({ users_list : result });
+      })
+      .catch(error => {
+        res.status(500).send("Error retrieving users" + error);
+      });
+  } 
+);
+
 // get user by id
 app.get("/users", (req, res) => {
   const id = req.params["id"]; //or req.params.id
@@ -86,26 +67,12 @@ app.get("/users", (req, res) => {
         res.status(404).send("User not found.");
       }
     })
-    .catch(error => {
+    .catch((error) => {
       res.status(500).send("Error retrieving user");
     });
 });
 
-// Get users by name, job, or both
-app.get("/users", (req, res) => {
-  const { name, job } = req.query;
-  if (name && job) {  
-    userService.getUsers(name, job)
-      .then(result => {
-        res.send({ users_list: result });
-      })
-      .catch(error => {
-        res.status(500).send("Error retrieving users");
-      });
-  } else {
-    res.status(400).send("Name and job query parameters are required");
-  }
-});
+// get user by name and job 
 
 app.delete("/users/", (req, res) => {
   const { id } = req.body;
