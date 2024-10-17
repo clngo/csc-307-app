@@ -10,12 +10,12 @@ function MyApp() {
   function removeOneCharacter(index) {
     const characterToDelete = characters[index];
 
-    fetch(`http://localhost:8000/users/`, {
+    fetch(`http://localhost:8000/users/${characterToDelete._id}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ id : characterToDelete.id }), // Include the ID in the body
+      body: JSON.stringify({ _id : characterToDelete._id }), // Include the ID in the body
     })
     .then((response) => {
       if (response.status === 204) {

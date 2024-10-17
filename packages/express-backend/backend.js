@@ -31,19 +31,7 @@ const generateRandomId = () => {
   return `${letters}${numbers}`; // Concatenate letters and numbers
 };
 
-// const deleteUser = (userId) => {
-//   // Check if the user exists by trying to find them
-//   const foundUser = findUserById(userId);
-
-//   if (foundUser) {
-//     users.users_list = users.users_list.filter((user) => user.id !== userId);
-//     return true; 
-//   }
-
-//   return false; 
-// };
-
-// Get users all users by name, job, or neither
+// Get users all users by name, job, both, or neither
 app.get("/users", (req, res) => {
   const { name, job } = req.query;
     userService.getUsers(name, job)
@@ -62,28 +50,14 @@ app.get("/users/:id", (req, res) => {
   userService.findUserById(id)
     .then(result => {
       if (result) { 
-        res.send(result);
+        res.status(204).send(result);
       } else {
         res.status(404).send("User not found.");
       }
     })
     .catch(error => {
-      res.status(500).send("Error retrieving user" + error);
+      res.status(500).send("Error retrieving user");
     });
-});
-
-// get user by name and job 
-
-app.delete("/users/", (req, res) => {
-  const { id } = req.body;
-  let result = deleteUser(id);
-
-  if (result) {
-    res.status(204).send(); // No content if successful
-  }
-  else {
-    res.status(404).send("User not found.");
-  }
 });
 
 // Post add new user
@@ -96,8 +70,24 @@ app.post("/users", (req, res) => {
   })
     .catch(error => {
     console.error(error);
-    res.status(500).send("Error adding user.");
+    res.status(500).send("Error adding user");
   });
+});
+
+// delete user by id
+app.delete("/users/:id", (req, res) => {
+  const id = req.params.id;
+  userService.deleteUserById(id)
+    .then(result => {
+      if (result) { 
+        res.status(204).send(result);
+      } else {
+        res.status(404).send("User not found.");
+      }
+    })
+    .catch(error => {
+      res.status(500).send("Error deleting user");
+    });
 });
 
 app.listen(port, () => {
